@@ -1,0 +1,10 @@
+h1 #{@fruit["name"]}
+
+p Det finns #{@fruit["amount"]} stycken
+
+a href="/fruits/#{@fruit["id"]}/update" Uppdatera
+
+form action="/fruits/#{@fruit["id"]}/delete" method="post"
+    input type="submit" value="Radera"
+
+a href="/fruits" Tillbaka

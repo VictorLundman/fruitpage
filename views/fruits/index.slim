@@ -1,0 +1,16 @@
+h1 Alla frukter 
+
+form action="/fruits" method="get"
+    input name="q" placeholder="Sök på frukter" type="text"
+    input type="submit" value="Sök"
+
+a href="/fruits/new" Ny frukt
+
+- @fruits.each do |fruit|
+    article
+        a href="/fruits/#{fruit['id']}/edit"
+            h2 = fruit["name"] 
+        p Det finns #{fruit["amount"]} stycken.
+        form action="/fruits/#{fruit["id"]}/delete" method="post"
+            input type="submit" value="Radera"
+        hr

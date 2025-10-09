@@ -1,0 +1,6 @@
+h1 Frukter 
+
+ul
+    - @fruits.each.with_index do |fruit, index|
+        li 
+            a href="/fruits/#{index}" #{fruit["name"]} 
