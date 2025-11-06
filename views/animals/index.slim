@@ -1,0 +1,19 @@
+h1 Alla djur
+
+form action="/animals" method="get"
+    input name="q" placeholder="Sök på djur" type="text"
+    input type="submit" value="Sök"
+
+a href="/animals/new" Nytt djur
+
+- if @animals.length == 0
+    p Inga djur matchade sökningen
+- else 
+    - @animals.each do |animal|
+        article
+            a href="/animals/#{animal['id']}/edit"
+                h2 = animal["name"] 
+            p Det finns #{animal["amount"]} stycken.
+            form action="/animals/#{animal["id"]}/delete" method="post"
+                input type="submit" value="Radera"
+            hr

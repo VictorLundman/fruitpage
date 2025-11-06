@@ -1,0 +1,6 @@
+form action="/animals/#{@animal['id']}/update" method="post"
+    label for="name" Djurnamn:
+    input name="name" type="text" value="#{@animal["name"]}"
+    label for="amount" Antal: 
+    input name="amount" type="number" value="#{@animal["amount"]}"
+    input type="submit" value="Uppdatera"

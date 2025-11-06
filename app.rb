@@ -57,9 +57,6 @@ post("/fruits") do
 
   db.execute("INSERT INTO fruits (name, amount) VALUES (?, ?)", [name, amount.to_i])
 
-  p name
-  p amount
-
   redirect("/fruits")
 end
 
@@ -71,7 +68,6 @@ def get_fruit(id)
   db = SQLite3::Database.new("db/fruits.db")
   db.results_as_hash = true
 
-  id = params[:id].to_i
   fruits = db.execute("SELECT * FROM fruits WHERE id=?", id)
   if fruits.length != 1
     return nil
@@ -79,15 +75,6 @@ def get_fruit(id)
 
   return fruits[0]
 end
-
-# get("/fruits/:id") do
-#   @fruit = get_fruit(params[:id].to_i)
-#   if !@fruit
-#     error(404)
-#   end
-
-#   slim(:"fruits/show")
-# end
 
 post("/fruits/:id/update") do
   id = params[:id].to_i
@@ -98,7 +85,6 @@ post("/fruits/:id/update") do
   end
 
   db = SQLite3::Database.new("db/fruits.db")
-  db.results_as_hash = true
 
   name = params[:name]
   amount = params[:amount].to_i
@@ -135,17 +121,88 @@ post("/fruits/:id/delete") do
   redirect("/fruits")
 end
 
-# get("/fruits/:id") do
-#   fruit_id = params[:id].to_i
-#   @fruit = fruits[fruit_id]
-#   slim(:fruit)
-# end
+get("/animals") do
+  query = params[:q]
 
-get("/cat") do
-  @cat = {
-    "name" => "Katten",
-    "age" => 5,
-  }
+  db = SQLite3::Database.new("db/fruits.db")
+  db.results_as_hash = true
 
-  slim(:cat)
+  if query and !query.empty?
+    @animals = db.execute("SELECT * FROM animals WHERE name LIKE ?", "%#{query}%")
+  else
+    @animals = db.execute("SELECT * FROM animals")
+  end
+
+  slim(:"animals/index")
+end
+
+post("/animals") do
+  name = params[:name]
+  amount = params[:amount].to_i
+
+  db = SQLite3::Database.new("db/fruits.db")
+  
+  db.execute("INSERT INTO animals (name, amount) VALUES (?, ?)", [name, amount])
+
+  redirect("/animals")
+end
+
+get("/animals/new") do
+  slim(:"animals/new")
+end
+
+def get_animal(id)
+  db = SQLite3::Database.new("db/fruits.db")
+  db.results_as_hash = true
+
+  animals = db.execute("SELECT * FROM animals WHERE id=?", id)
+  if animals.length != 1
+    return nil
+  end
+
+  return animals[0]
+end
+
+post("/animals/:id/update") do
+  id = params[:id].to_i
+
+  @animal = get_animal(id)
+  if !@animal 
+    error(404)
+  end
+
+  name = params[:name]
+  amount = params[:amount].to_i
+
+  db = SQLite3::Database.new("db/fruits.db")
+
+  db.execute("UPDATE animals SET name=?, amount=? WHERE id=?", [name, amount, id])
+
+  redirect("/animals")
+end
+
+get("/animals/:id/edit") do
+  id = params[:id].to_i
+
+  @animal = get_animal(id)
+  if !@animal 
+    error(404)
+  end
+
+  slim(:"animals/edit")
+end
+
+post("/animals/:id/delete") do
+  id = params[:id].to_i
+
+  @animal = get_animal(id)
+  if !@animal 
+    error(404)
+  end
+
+  db = SQLite3::Database.new("db/fruits.db")
+
+  db.execute("DELETE FROM animals WHERE id=?", id)
+
+  redirect("/animals")
 end
